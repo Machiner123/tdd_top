@@ -26,32 +26,51 @@ class HomePageTest(TestCase):
         self.assertEqual(response.content.decode(), expected_html)
         
     def test_home_page_can_save_a_POST_request(self):
-        '''
-        Notice that 'item_text' key is assigned 'A new list item' string in the post
-        dic-like object. 'item_text' is in post because of name= 'item_text' in input
-        tag in home.html. Now, the dictionary in expected_html further down is completely
-        different, and it contains the same value as 'item_text.' Where in the first 
-        'A new list item', the user supposedly entered it, the second is actually a 
-        response from views.py back to the home.html file.  
-        '''
         request = HttpRequest()
         request.method = 'POST'
         request.POST['item_text'] = 'A new list item'
 
         response = home_page(request)
 
-        # this tests the response for containing the string 'A new list item':
-        self.assertIn('A new list item', response.content.decode())
-        # this tests the html, rendered from the response
-        expected_html = render_to_string(
-            'home.html',
-            {'new_item_text':  'A new list item'}
-        )
-        #this finally asserts that the HttpResponse object really is our home.html file,
-        # plus the mapping of the 'new_item_text' python object to the string "A new list
-        # item"
-        self.assertEqual(response.content.decode(), expected_html)
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+
+
+    def test_home_page_redirects_after_POST(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'A new list item'
+
+        response = home_page(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    
+    def test_home_page_displays_all_list_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())
+
         
+    def test_home_page_only_saves_items_when_necessary(self):
+        '''
+        this sends a request where request.method != POST. it then tests how many objects
+        our models.Item class has, and it should be zero, which means nothing was entered
+        into database
+        ''' 
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
+
+        
+
 
 class ItemModelTest(TestCase):
 
