@@ -58,8 +58,6 @@ class NewVisitorTest(LiveServerTestCase):
 
         # She is invited to enter a to-do item s[...rest of comments as before]
 
-if __name__ == '__main__':  
-    unittest.main(warnings='ignore')  
 
 # She types "Buy peacock feathers" into a text box (Edith's hobby
 # is tying fly-fishing lures)
