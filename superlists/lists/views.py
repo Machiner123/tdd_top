@@ -15,7 +15,7 @@ def home_page(request):
 
 def view_list(request, list_id):
     '''
-    git all the list objects from request matching lid_id, filter items objects that
+    get all the list objects from request matching list_id, filter items objects that
     have the common list object. Pass these items to list.html and render it
     '''
     list_ = List.objects.get(id=list_id)
