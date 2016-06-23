@@ -9,10 +9,19 @@ from lists.views import home_page
 class HomePageTest(TestCase):
 
     def test_root_url_resolves_to_home_page_view(self):
+        '''
+        resolve checks if the url '/' leads anywhere, and it's func attribute
+        is the view function that controls that url
+        '''
         found = resolve('/')  
         self.assertEqual(found.func, home_page)  
     
     def test_home_page_returns_correct_html(self):
+        '''
+        we check if two different values are equal here, the veiws.home_page's output
+        given an HttpRequest object as input, which is supposed to be home.html file. We
+        then compare this to the home.html file passed through rendered_to_string.
+        '''
         request = HttpRequest()  
         response = home_page(request)
         # think about similarities here between render and render to string:
@@ -29,6 +38,11 @@ class HomePageTest(TestCase):
 class ListAndItemModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
+        '''
+        store List() object in name list_, create two Item() objects with different .text
+        but the same lis_ object stored in attribute .list, then check if data stored in DB
+        actually matches what we want: two different .text values, and the same .list value
+        '''
         list_ = List()
         list_.save()
         
@@ -62,8 +76,9 @@ class ListViewTest(TestCase):
         
     def test_uses_list_template(self):
         '''
-        list_ being an entry in a db, it has an id or a private key, and here we make sure
-        views rendered the right url and the right template
+        create List instance as list_, which will have automatically generated unique .id
+        attribute. Check that the template used under the url lists/list_.id matches our 
+        list.html template
         '''
         list_ = List.objects.create()
         response = self.client.get('/lists/%d/' % (list_.id))
@@ -72,9 +87,10 @@ class ListViewTest(TestCase):
 
     def test_displays_only_items_for_that_list(self):
         '''
-        every time a list object is created, we render a new response. this means that
-        this second time we create a list object, in other_list, the response must not
-        contain it
+        create List object, and two Item objects with unique .text value, but the same .list value.
+        create another List object and two more Item objects with unique .text and the same .list value.
+        Pass the first list's value as lists/first_list_id, and check that the output displays
+        only the first list and not the second.
         '''
         correct_list = List.objects.create()
         Item.objects.create(text='itemey 1', list=correct_list)

@@ -18,6 +18,12 @@ from django.contrib import admin
 from lists import views
 
 urlpatterns = [
+    '''
+    lists/new will be the same for every user, a blank list that they fill out
+    once the first item is entered, they are redirected to the url of their list's id
+    in the database. Here we pass the id to the views.py file with a captured regex.
+    To add new items to this existing list, they are redirected to lists/list_id/add_item.
+    '''
     url(r'^$', views.home_page, name="home"),
     url(r'^lists/new$', 'lists.views.new_list', name='new_list'),
     url(r'^lists/(\d+)/$', 'lists.views.view_list', name='view_list'),
