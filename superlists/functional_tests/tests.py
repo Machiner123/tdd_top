@@ -87,7 +87,7 @@ class NewVisitorTest(LiveServerTestCase):
         
 
         
-        self.fail('Finish the test!')  
+        
 
         # She is invited to enter a to-do item s[...rest of comments as before]
 

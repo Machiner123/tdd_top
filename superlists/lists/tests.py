@@ -87,10 +87,8 @@ class ListViewTest(TestCase):
 
     def test_displays_only_items_for_that_list(self):
         '''
-        create List object, and two Item objects with unique .text value, but the same .list value.
-        create another List object and two more Item objects with unique .text and the same .list value.
-        Pass the first list's value as lists/first_list_id, and check that the output displays
-        only the first list and not the second.
+        create two item objects with diff list values, the response from views
+        if it has contains the right values and doesnt contain the wrong values
         '''
         correct_list = List.objects.create()
         Item.objects.create(text='itemey 1', list=correct_list)
@@ -105,6 +103,17 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'itemey 2')
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
+    
+    def test_passes_correct_list_to_template(self):
+        '''
+        two lists are created, but only one is passed as post request to views, and response
+        is checked to see that it contains the one we passed and not the other
+        '''
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get('/lists/%d/' % (correct_list.id,))
+        self.assertEqual(response.context['list'], correct_list)
+        
 
 
 
