@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>To-Do lists</title>
+    </head>
+    <body>
+        <h1>Start a new To-Do list</h1>
+        <form method="POST" action="/lists/{{ list.id }}/add_item">
+            <input name = "item_text" id="id_new_item" placeholder="Enter a to-do item" />
+            {% csrf_token %}
+        </form>
+        <table id="id_list_table">
+            <!-- since we are making lists of items by filtering item objects by
+            their item.list value, when we run the forloop we display every item
+            for list.item_set.all -->
+            {% for item in list.item_set.all %}
+                <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
+            {% endfor %}
+
+        </table>
+    </body>
+</html>
