@@ -13,7 +13,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Item',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('text', models.TextField(default='')),
             ],
+        ),
+        migrations.CreateModel(
+            name='List',
+            fields=[
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='item',
+            name='list',
+            field=models.ForeignKey(to='lists.List', default=None),
         ),
     ]
