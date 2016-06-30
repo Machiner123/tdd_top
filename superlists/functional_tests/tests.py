@@ -9,16 +9,19 @@ class NewVisitorTest(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls): 
         '''
-        sys.argv is list of command linen arguments passed to the script.
+        This whole class method tries to circumvent our initial setUp() that uses the test server
+        to use a real server. If we want a real erver, we put it in a command line argument.
+        sys.argv is list of command line arguments passed to the script.
         We look for 'liveserver = url', split it into arg = [['liveserver'], ['url']],
         then store 'http://' + 'arg[1]' in cls.server_url
         ''' #1
         for arg in sys.argv:  #2
             if 'liveserver' in arg:  #arg will contain 'liveserver' = 'url'
-                #split it intwo a list=['liveserver', 'url'], with list[1] = 'url'
+                #split it into a list=['liveserver', 'url'], with list[1] = 'url'
                 cls.server_url = 'http://' + arg.split('=')[1]  #4
-                return  #5
-        super().setUpClass()  #6
+                return  # this makes it an if-else
+        super().setUpClass()  # this does not call the method within the method, this makes
+                              # the method callable by other subclasses
         cls.server_url = cls.live_server_url
 
     @classmethod
@@ -105,18 +108,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy milk', page_text)
 
-    def test_layout_and_styling(self):
-        # Edith goes to the home page
-        self.browser.get(self.server_url)
-        self.browser.set_window_size(1024, 768)
-
-        # She notices the input box is nicely centered
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=5
-        )
+    
 
 
         
